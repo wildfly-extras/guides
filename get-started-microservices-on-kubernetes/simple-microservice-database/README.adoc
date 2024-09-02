@@ -6,11 +6,9 @@ https://wildfly.org[WildFly].
 
 The `simple-microservice-database` project stores data in an external PostgreSQL database.
 
-The `src/main` folder contains a simple 'Hello world' style Jakarta EE application using JAX-RS.
-
 == Building the application
 
-To run the application, you use Maven:
+To build the application, you use Maven:
 
 [source,shell]
 ----
@@ -19,29 +17,6 @@ mvn clean package
 
 Maven will compile the application, provision a WildFly server
 The WildFly server is created in `target/server` with the application deployed in it.
-
-== Running the application
-
-To run the application, run the commands:
-
-[source,shell]
-----
-cd target/server
-./bin/standalone.sh
-----
-
-Once WildFly is running, the application can be accessed at http://localhost:8080/
-
-== Testing the application
-
-To run integration tests to verify the application, you use Maven:
-
-[source,shell]
-----
-mvn clean package verify
-----
-
-Tests in `src/test` are run against the server in `target/server`.
 
 == Start PostgreSQL
 
@@ -79,7 +54,31 @@ podman run --rm --network=demo-network -p 8080:8080 -p 9990:9990 \
     my-jaxrs-app-db:latest
 ----
 
+== Test the application
+
+Insert some data into the database:
+[source,shell]
+----
+$ curl -X POST http://localhost:8080/hello/test-table/somedata1/somedata2
+{"field1":"somedata1","field2":"somedata2"}
+----
+
+List data in the database:
+[source,shell]
+----
+$ curl http://localhost:8080/hello/test-table
+[{"field1":"somedata1","field2":"somedata2","id":1}]
+----
+
 == Deploy to Kubernetes
+
+[source,shell]
+----
+podman tag my-jaxrs-app quay.io/tborgato/my-jaxrs-app-db
+podman push quay.io/tborgato/my-jaxrs-app-db
+----
+
+NOTE: in the above commands, replace `tborgato` with your personal account
 
 [source,shell]
 ----
@@ -89,6 +88,8 @@ kubectl apply -f kubernetes/postgres-service.yaml
 kubectl apply -f kubernetes/deployment-my-jaxrs-app-db.yaml
 kubectl expose deployment.apps/my-jaxrs-app-db-deployment --type=NodePort --port=8080
 ----
+
+NOTE: in the above files, replace `tborgato` with your personal account
 
 == Resources
 

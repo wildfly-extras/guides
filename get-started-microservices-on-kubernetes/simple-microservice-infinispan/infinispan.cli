@@ -1,9 +1,9 @@
 /subsystem=jgroups/channel=ee:write-attribute(name=stack,value=tcp)
 /subsystem=transactions:write-attribute(name=node-identifier,value=${transactions.node-identifier:wildfly1})
-# missing clustering protocol in stack
+# add DNS_PING protocol to TCP stack
 /subsystem=jgroups/stack=tcp/protocol=dns.DNS_PING:add(add-index=1, properties={dns_query="_ping._tcp.jgroups-dns-ping.myproject.svc.cluster.local"})
 # connection to the remote infinispan server
-/socket-binding-group=standard-sockets/remote-destination-outbound-socket-binding=remote-infinispan-server:add(host=${infinispan.server.host:0.0.0.0}, port=${infinispan.server.port:11222})
+/socket-binding-group=standard-sockets/remote-destination-outbound-socket-binding=remote-infinispan-server:add(host=${infinispan.server.host}, port=${infinispan.server.port:11222})
 batch
 # remote-cache-container
 /subsystem=infinispan/remote-cache-container=web-sessions:add(default-remote-cluster=infinispan-server-cluster, statistics-enabled=true, properties={infinispan.client.hotrod.auth_username=${infinispan.server.user:admin}, infinispan.client.hotrod.auth_password=${infinispan.server.password:123pippobaudo}, infinispan.client.hotrod.sasl_mechanism=DIGEST-MD5})

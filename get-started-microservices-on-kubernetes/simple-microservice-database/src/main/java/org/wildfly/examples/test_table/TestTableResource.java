@@ -1,3 +1,7 @@
+/*
+ * Copyright The WildFly Authors
+ * SPDX-License-Identifier: Apache-2.0
+ */
 package org.wildfly.examples.test_table;
 
 import jakarta.enterprise.context.RequestScoped;
@@ -35,7 +39,7 @@ public class TestTableResource {
 	@Transactional
 	@POST
 	@Produces({"application/json"})
-	@Path("insert/{field1}/{field2}")
+	@Path("{field1}/{field2}")
 	public Response insertIntoTestTable(
 			@PathParam("field1") @DefaultValue("some data 1") String field1,
 			@PathParam("field2") @DefaultValue("some data 2") String field2) throws Exception {
@@ -55,7 +59,6 @@ public class TestTableResource {
 
 	@GET
 	@Produces({"application/json"})
-	@Path("list")
 	public List<TestTable> getAllRowsFromTestTable() {
 		try {
 			List<TestTable> allRows = getAllRows();

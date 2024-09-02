@@ -7,11 +7,9 @@ https://wildfly.org[WildFly].
 The `simple-microservice-jms` project sends messages to an Artemis JMS Broker and then consumes those messages using
 a Message Driven Bean.
 
-The `src/main` folder contains a simple 'Hello world' style Jakarta EE application using JAX-RS.
-
 == Building the application
 
-To run the application, you use Maven:
+To build the application, you use Maven:
 
 [source,shell]
 ----
@@ -20,29 +18,6 @@ mvn clean package
 
 Maven will compile the application, provision a WildFly server
 The WildFly server is created in `target/server` with the application deployed in it.
-
-== Running the application
-
-To run the application, run the commands:
-
-[source,shell]
-----
-cd target/server
-./bin/standalone.sh
-----
-
-Once WildFly is running, the application can be accessed at http://localhost:8080/
-
-== Testing the application
-
-To run integration tests to verify the application, you use Maven:
-
-[source,shell]
-----
-mvn clean package verify
-----
-
-Tests in `src/test` are run against the server in `target/server`.
 
 == Start Artemis
 
@@ -81,11 +56,21 @@ podman run --rm --network=demo-network -p 8080:8080 -p 9990:9990 \
 
 [source,shell]
 ----
+podman tag my-jaxrs-app quay.io/tborgato/my-jms-app
+podman push quay.io/tborgato/my-jms-app
+----
+
+NOTE: in the above commands, replace `tborgato` with your personal account
+
+[source,shell]
+----
 kubectl apply -f kubernetes/artemis-deployment.yaml
 kubectl apply -f kubernetes/artemis-service.yaml
 kubectl apply -f kubernetes/deployment-my-jms-app.yaml
 kubectl expose deployment.apps/my-jms-app-deployment --type=NodePort --port=8080
 ----
+
+NOTE: in the above files, replace `tborgato` with your personal account
 
 == Resources
 

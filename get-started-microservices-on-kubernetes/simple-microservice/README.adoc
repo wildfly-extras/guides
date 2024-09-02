@@ -8,7 +8,7 @@ The `src/main` folder contains a simple 'Hello world' style Jakarta EE applicati
 
 == Building the application
 
-To run the application, you use Maven:
+To build the application, you use Maven:
 
 [source,shell]
 ----
@@ -61,9 +61,19 @@ podman run --rm -p 8080:8080 -p 9990:9990 \
 
 [source,shell]
 ----
+podman tag my-jaxrs-app quay.io/tborgato/my-jaxrs-app
+podman push quay.io/tborgato/my-jaxrs-app
+----
+
+NOTE: in the above commands, replace `tborgato` with your personal account
+
+[source,shell]
+----
 kubectl apply -f kubernetes/deployment-my-jaxrs-app.yaml
 kubectl expose deployment.apps/my-jaxrs-app-deployment --type=NodePort --port=8080
 ----
+
+NOTE: in the above files, replace `tborgato` with your personal account
 
 == Resources
 

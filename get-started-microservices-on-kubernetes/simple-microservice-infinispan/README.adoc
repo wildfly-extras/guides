@@ -6,11 +6,22 @@ https://wildfly.org[WildFly].
 
 The `simple-microservice-infinispan` project stores session data in an external Infinispan Server.
 
-The `src/main` folder contains a simple 'Hello world' style Jakarta EE application using JAX-RS.
+== Start Infinispan Server
 
-== Building the application
+[source,shell]
+----
+podman network create demo-network
 
-To run the application, you use Maven:
+podman run --rm --network=demo-network --name=my-infinispan \
+-p 11222:11222 \
+-e USER="admin" \
+-e PASS="123pippobaudo" \
+quay.io/infinispan/server:latest
+----
+
+== Build the application
+
+To build the application, you use Maven:
 
 [source,shell]
 ----
@@ -19,44 +30,6 @@ mvn clean package
 
 Maven will compile the application, provision a WildFly server
 The WildFly server is created in `target/server` with the application deployed in it.
-
-== Running the application
-
-To run the application, run the commands:
-
-[source,shell]
-----
-cd target/server
-./bin/standalone.sh
-----
-
-Once WildFly is running, the application can be accessed at http://localhost:8080/
-
-== Testing the application
-
-To run integration tests to verify the application, you use Maven:
-
-[source,shell]
-----
-mvn clean package verify
-----
-
-Tests in `src/test` are run against the server in `target/server`.
-
-== Start Infinispan Server
-
-[source,shell]
-----
-sudo podman network create demo-network
-
-sudo podman run --rm --network=demo-network --name=my-infinispan \
--p 11222:11222 \
--e USER="admin" \
--e PASS="123pippobaudo" \
-quay.io/infinispan/server:latest
-----
-
-NOTE: "sudo" is required when running infinispan using podman
 
 == Build Docker image
 
@@ -82,12 +55,22 @@ podman run --rm --network=demo-network -p 8080:8080 -p 9990:9990 \
 
 [source,shell]
 ----
+podman tag my-jaxrs-app quay.io/tborgato/my-jaxrs-app-infinispan
+podman push quay.io/tborgato/my-jaxrs-app-infinispan
+----
+
+NOTE: in the above commands, replace `tborgato` with your personal account
+
+[source,shell]
+----
 kubectl apply -f kubernetes/infinispan-configmap.yaml
 kubectl apply -f kubernetes/infinispan-deployment.yaml
 kubectl apply -f kubernetes/infinispan-service.yaml
 kubectl apply -f kubernetes/deployment-my-jaxrs-app-infinispan.yaml
 kubectl expose deployment.apps/my-jaxrs-app-infinispan-deployment --type=NodePort --port=8080
 ----
+
+NOTE: in the above files, replace `tborgato` with your personal account
 
 == Resources
 
