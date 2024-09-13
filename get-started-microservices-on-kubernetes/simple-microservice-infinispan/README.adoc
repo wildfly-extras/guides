@@ -1,0 +1,78 @@
+
+= simple-microservice-infinispan
+
+The `simple-microservice-infinispan` project is a simple Jakarta EE application with a HTTP endpoint that is running in
+https://wildfly.org[WildFly].
+
+The `simple-microservice-infinispan` project stores session data in an external Infinispan Server.
+
+== Start Infinispan Server
+
+[source,shell]
+----
+podman network create demo-network
+
+podman run --rm --network=demo-network --name=my-infinispan \
+-p 11222:11222 \
+-e USER="admin" \
+-e PASS="123pippobaudo" \
+quay.io/infinispan/server:latest
+----
+
+== Build the application
+
+To build the application, you use Maven:
+
+[source,shell]
+----
+mvn clean package
+----
+
+Maven will compile the application, provision a WildFly server
+The WildFly server is created in `target/server` with the application deployed in it.
+
+== Build Docker image
+
+[source,shell]
+----
+podman build -t my-jaxrs-app-infinispan:latest .
+----
+
+== Run Docker image
+
+[source,shell]
+----
+podman run --rm --network=demo-network -p 8080:8080 -p 9990:9990 \
+    -e INFINISPAN_SERVER_HOST=my-infinispan \
+    -e INFINISPAN_SERVER_PORT=11222 \
+    -e INFINISPAN_SERVER_USER=admin \
+    -e INFINISPAN_SERVER_PASSWORD=123pippobaudo \
+    --name=my-jaxrs-app-infinispan \
+    my-jaxrs-app-infinispan:latest
+----
+
+== Deploy to Kubernetes
+
+[source,shell]
+----
+podman tag my-jaxrs-app quay.io/tborgato/my-jaxrs-app-infinispan
+podman push quay.io/tborgato/my-jaxrs-app-infinispan
+----
+
+NOTE: in the above commands, replace `tborgato` with your personal account
+
+[source,shell]
+----
+kubectl apply -f kubernetes/infinispan-configmap.yaml
+kubectl apply -f kubernetes/infinispan-deployment.yaml
+kubectl apply -f kubernetes/infinispan-service.yaml
+kubectl apply -f kubernetes/deployment-my-jaxrs-app-infinispan.yaml
+kubectl expose deployment.apps/my-jaxrs-app-infinispan-deployment --type=NodePort --port=8080
+----
+
+NOTE: in the above files, replace `tborgato` with your personal account
+
+== Resources
+
+* https://wildfly.org[WildFly]
+* https://docs.wildfly.org[WildFly Documentation]

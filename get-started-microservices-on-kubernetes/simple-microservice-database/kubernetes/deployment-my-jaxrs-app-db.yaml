@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-jaxrs-app-db-deployment
+  labels:
+    app: my-jaxrs-app-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-jaxrs-app-db
+  template:
+    metadata:
+      labels:
+        app: my-jaxrs-app-db
+    spec:
+      containers:
+        - name: my-jaxrs-app-db
+          image: quay.io/tborgato/my-jaxrs-app-db
+          ports:
+            - containerPort: 8080
+            - containerPort: 9990
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: 9990
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: 9990
+          startupProbe:
+            httpGet:
+              path: /health/started
+              port: 9990
+          env:
+            - name: POSTGRESQL_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-secret
+                  key: POSTGRESQL_USER
+            - name: POSTGRESQL_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-secret
+                  key: POSTGRESQL_PASSWORD
+            - name: POSTGRESQL_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-secret
+                  key: POSTGRESQL_HOST
+            - name: POSTGRESQL_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-secret
+                  key: POSTGRESQL_PORT
+            - name: POSTGRESQL_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-secret
+                  key: POSTGRESQL_DATABASE
+            - name: POSTGRESQL_JNDI
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-secret
+                  key: POSTGRESQL_JNDI

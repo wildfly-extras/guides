@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-jms-app-deployment
+  labels:
+    app: my-jms-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-jms-app
+  template:
+    metadata:
+      labels:
+        app: my-jms-app
+    spec:
+      containers:
+        - name: my-jms-app
+          image: quay.io/tborgato/my-jms-app
+          ports:
+            - containerPort: 8080
+            - containerPort: 9990
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: 9990
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: 9990
+          startupProbe:
+            httpGet:
+              path: /health/started
+              port: 9990
+          env:
+            - name: JBOSS_MESSAGING_CONNECTOR_HOST
+              value: artemis-service
+            - name: JBOSS_MESSAGING_CONNECTOR_PORT
+              value: '61616'

@@ -29,3 +29,5 @@ replay_pid*
 *.iws
 .idea
 
+**/target/
+

@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: infinispan
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: infinispan
+  template:
+    metadata:
+      labels:
+        app: infinispan
+    spec:
+      containers:
+        - name: infinispan
+          image: 'quay.io/infinispan/server:latest'
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5432
+          env:
+            - name: USER
+              valueFrom:
+                configMapKeyRef:
+                  name: infinispan-secret
+                  key: USER
+            - name: PASS
+              valueFrom:
+                configMapKeyRef:
+                  name: infinispan-secret
+                  key: PASS
+            - name: JAVA_OPTIONS
+              value: '-Dinfinispan.cluster.stack=kubernetes -Djgroups.dns.query="infinispan-dns-ping.myproject.svc.cluster.local"'

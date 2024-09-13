@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: artemis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: artemis
+  template:
+    metadata:
+      labels:
+        app: artemis
+    spec:
+      containers:
+        - name: artemis
+          image: 'quay.io/artemiscloud/activemq-artemis-broker-kubernetes:latest'
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 61616
+            - containerPort: 8161
+          env:
+            - name: AMQ_USER
+              value: admin
+            - name: AMQ_PASSWORD
+              value: admin
+            - name: AMQ_DATA_DIR
+              value: //home/jboss/data

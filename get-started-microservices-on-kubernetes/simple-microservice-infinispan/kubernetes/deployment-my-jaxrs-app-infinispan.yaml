@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-jaxrs-app-infinispan-deployment
+  labels:
+    app: my-jaxrs-app-infinispan
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-jaxrs-app-infinispan
+  template:
+    metadata:
+      labels:
+        app: my-jaxrs-app-infinispan
+    spec:
+      containers:
+        - name: my-jaxrs-app-infinispan
+          image: quay.io/tborgato/my-jaxrs-app-infinispan
+          ports:
+            - containerPort: 8080
+            - containerPort: 9990
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: 9990
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: 9990
+          startupProbe:
+            httpGet:
+              path: /health/started
+              port: 9990
+          env:
+            - name: INFINISPAN_SERVER_HOST
+              value: infinispan-service
+            - name: INFINISPAN_SERVER_PORT
+              value: '11222'
+            - name: INFINISPAN_SERVER_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: infinispan-secret
+                  key: USER
+            - name: INFINISPAN_SERVER_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: infinispan-secret
+                  key: PASS
