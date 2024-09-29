@@ -26,7 +26,10 @@ public class GettingStartedEndpoint {
     @Path("/{name}")
     @Produces(MediaType.TEXT_PLAIN)
     public Response sayHello(final @PathParam("name") String name) {
-        String response = service.hello(name) + " JWT2:" + (jwt!=null? jwt.getSubject():null);
+        String response =
+                service.hello(name)
+                        + " Subject:" + (jwt!=null? jwt.getSubject():null)
+                        + " Issuer: " + jwt.getIssuer();
 
         return Response.ok(response).build();
     }

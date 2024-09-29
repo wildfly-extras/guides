@@ -3,7 +3,8 @@
   ~ Copyright The WildFly Authors
   ~ SPDX-License-Identifier: Apache-2.0
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.wildfly.examples</groupId>
     <artifactId>simple-microservice</artifactId>
@@ -152,9 +153,28 @@
             <scope>provided</scope>
         </dependency>
 
-        <dependency>
+        <!--<dependency>
             <groupId>org.eclipse.microprofile.jwt</groupId>
             <artifactId>microprofile-jwt-auth-api</artifactId>
+            <scope>provided</scope>
+        </dependency>-->
+
+        <!--<dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-tracing-api</artifactId>
+            <version>2.0.1.Final</version>
+            <scope>provided</scope>
+        </dependency>-->
+
+        <!-- OIDC Token -->
+        <dependency>
+            <groupId>org.wildfly.security</groupId>
+            <artifactId>wildfly-elytron-http-oidc</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
             <scope>provided</scope>
         </dependency>
 
@@ -221,6 +241,7 @@
                         <layer>microprofile-config</layer>
                         <layer>microprofile-rest-client</layer>
                         <layer>microprofile-jwt</layer>
+                        <layer>elytron-oidc-client</layer>
                     </layers>
                 </configuration>
                 <executions>
@@ -252,4 +273,30 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>bare-metal</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.wildfly.plugins</groupId>
+                        <artifactId>wildfly-maven-plugin</artifactId>
+                        <version>${version.wildfly.maven.plugin}</version>
+                        <configuration>
+                            <packaging-scripts>
+                                <packaging-script>
+                                    <commands>
+                                        <command>
+                                            /socket-binding-group=standard-sockets:write-attribute(name=port-offset,value=200)
+                                        </command>
+                                    </commands>
+                                </packaging-script>
+                            </packaging-scripts>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

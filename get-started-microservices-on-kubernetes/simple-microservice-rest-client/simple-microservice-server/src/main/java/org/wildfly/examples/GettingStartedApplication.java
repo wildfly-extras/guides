@@ -8,7 +8,7 @@ import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.core.Application;
 import org.eclipse.microprofile.auth.LoginConfig;
 
-@LoginConfig(authMethod="MP-JWT", realmName="MP JWT Realm")
+@LoginConfig(authMethod="MP-JWT", realmName="myrealm")
 @ApplicationPath("/hello")
 public class GettingStartedApplication extends Application {
 

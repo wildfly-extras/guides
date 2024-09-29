@@ -224,4 +224,30 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>bare-metal</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.wildfly.plugins</groupId>
+                        <artifactId>wildfly-maven-plugin</artifactId>
+                        <version>${version.wildfly.maven.plugin}</version>
+                        <configuration>
+                            <packaging-scripts>
+                                <packaging-script>
+                                    <commands>
+                                        <command>
+                                            /socket-binding-group=standard-sockets:write-attribute(name=port-offset,value=100)
+                                        </command>
+                                    </commands>
+                                </packaging-script>
+                            </packaging-scripts>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

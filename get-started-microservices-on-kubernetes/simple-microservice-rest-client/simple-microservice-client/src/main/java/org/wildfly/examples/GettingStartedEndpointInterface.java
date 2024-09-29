@@ -1,6 +1,7 @@
 package org.wildfly.examples;
 
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.HeaderParam;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
@@ -17,5 +18,5 @@ public interface GettingStartedEndpointInterface {
 	@GET
 	@Path("/{name}")
 	@Produces(MediaType.TEXT_PLAIN)
-	Response sayHello(final @PathParam("name") String name);
+	Response sayHello(@HeaderParam("Authorization") String authorization, final @PathParam("name") String name);
 }
