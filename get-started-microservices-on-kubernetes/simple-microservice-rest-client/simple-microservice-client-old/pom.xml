@@ -3,14 +3,15 @@
   ~ Copyright The WildFly Authors
   ~ SPDX-License-Identifier: Apache-2.0
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.wildfly.examples</groupId>
     <artifactId>simple-microservice</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 
     <packaging>war</packaging>
-    <name>simple-microservice</name>
+    <name>simple-microservice-client</name>
     <description>Insert description for your project here.</description>
 
     <properties>
@@ -35,6 +36,10 @@
 
         <!-- maven-compiler-plugin -->
         <maven.compiler.release>11</maven.compiler.release>
+
+        <version.bom.microprofile>33.0.2.Final</version.bom.microprofile>
+
+        <version.com.nimbusds.jose-jwt>9.24.4.redhat-00001</version.com.nimbusds.jose-jwt>
     </properties>
 
     <!--
@@ -111,11 +116,10 @@
                 <scope>import</scope>
             </dependency>
 
-            <!--Define the JUnit5 bom. WildFly BOM still contains JUnit4, so we have to declare a version here -->
             <dependency>
-                <groupId>org.junit</groupId>
-                <artifactId>junit-bom</artifactId>
-                <version>5.10.1</version>
+                <groupId>org.wildfly.bom</groupId>
+                <artifactId>wildfly-microprofile</artifactId>
+                <version>${version.bom.microprofile}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -138,28 +142,57 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- Test scope dependencies -->
         <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <scope>test</scope>
+            <groupId>org.eclipse.microprofile.rest.client</groupId>
+            <artifactId>microprofile-rest-client-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.microprofile.config</groupId>
+            <artifactId>microprofile-config-api</artifactId>
+            <scope>provided</scope>
         </dependency>
 
-        <dependency>
-            <groupId>org.jboss.arquillian.junit5</groupId>
-            <artifactId>arquillian-junit5-container</artifactId>
-            <scope>test</scope>
-        </dependency>
+        <!--<dependency>
+            <groupId>org.eclipse.microprofile.jwt</groupId>
+            <artifactId>microprofile-jwt-auth-api</artifactId>
+            <scope>provided</scope>
+        </dependency>-->
 
-        <dependency>
-            <groupId>org.wildfly.arquillian</groupId>
-            <artifactId>wildfly-arquillian-container-managed</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
+        <!--<dependency>
             <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-client</artifactId>
+            <artifactId>resteasy-tracing-api</artifactId>
+            <version>2.0.1.Final</version>
+            <scope>provided</scope>
+        </dependency>-->
+
+        <!-- OIDC Token -->
+        <dependency>
+            <groupId>org.wildfly.security</groupId>
+            <artifactId>wildfly-elytron-http-oidc</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- TokenUtil -->
+        <dependency>
+            <groupId>com.nimbusds</groupId>
+            <artifactId>nimbus-jose-jwt</artifactId>
+            <version>${version.com.nimbusds.jose-jwt}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.json</groupId>
+            <artifactId>jakarta.json-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.parsson</groupId>
+            <artifactId>parsson</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -205,6 +238,10 @@
                     <layers>
                         <!-- layers may be used to customize the server to provision-->
                         <layer>cloud-server</layer>
+                        <layer>microprofile-config</layer>
+                        <layer>microprofile-rest-client</layer>
+                        <layer>microprofile-jwt</layer>
+                        <layer>elytron-oidc-client</layer>
                     </layers>
                 </configuration>
                 <executions>
@@ -236,4 +273,30 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>bare-metal</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.wildfly.plugins</groupId>
+                        <artifactId>wildfly-maven-plugin</artifactId>
+                        <version>${version.wildfly.maven.plugin}</version>
+                        <configuration>
+                            <packaging-scripts>
+                                <packaging-script>
+                                    <commands>
+                                        <command>
+                                            /socket-binding-group=standard-sockets:write-attribute(name=port-offset,value=200)
+                                        </command>
+                                    </commands>
+                                </packaging-script>
+                            </packaging-scripts>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

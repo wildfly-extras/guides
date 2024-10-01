@@ -1,0 +1,112 @@
+
+openssl genpkey -algorithm RSA -out private.pem -pkeyopt rsa_keygen_bits:2048
+mkdir -p src/main/resources/META-INF
+openssl rsa -in private.pem -pubout -out src/main/resources/META-INF/public.pem
+
+mvn exec:java -Dexec.mainClass=org.wildfly.examples.TokenUtil -Dexec.classpathScope=test -Dexec.args="testUser 2017-09-15 Echoer"
+
+curl -H "Authorization: Bearer eyJraWQiOiJUZXN0IEtleSIsInR5cCI6Imp3dCIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiJ0ZXN0VXNlciIsInVwbiI6InRlc3RVc2VyIiwiaXNzIjoicXVpY2tzdGFydC1qd3QtaXNzdWVyIiwiYXVkIjoiand0LWF1ZGllbmNlIiwiZ3JvdXBzIjpbIkVjaG9lciJdLCJiaXJ0aGRhdGUiOiIyMDE3LTA5LTE1IiwianRpIjoiNGQwZjlhMzgtNTc2Yi00NTY4LTg3ODEtMWU1ODkxZTgyYjAzIiwiaWF0IjoxNzI3MTk1NDgzLCJleHAiOjE3MjcyMDk4ODN9.IgjycuixlBvfiqv0p5l7zW2bQRSpHMfP_Z1SJK9ml5UuRwcv_QbY8ZZNeTRk9HuukPHbgpQkkHvpDYfdma2urwPfiS8RPR7rxvoCHu41BwrZ_MJStTk0NNGO35FEC9zwoY8JsryDSqqQkdkpQlDWrHY6uaZzHR5SpQPdmoUteoP7RCQsjyWIdjI0tOrv_JV0vPErq1tGvhUNjM_DMpYRew0yFtpD7cSQUT5yJfN6LvfOuBK7YE2E1O0UWCTWN5quzHJIovWMWoXhsHGU32VgOdxvkFWYyFnRA8BHLZ0slbfUM2nY1gj4HOBhJ0SFl3yAMZVnj5IqQle9orqz7TpXZA" http://localhost:8080/hello/pippo
+
+
+curl -H "Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICI3bHRHWUk1eHhJVGh3cVFCNmV4UWlITmlGU3N5VXZkbGVKNkUzTDFTMWxzIn0.eyJleHAiOjE3Mjc0NDY3ODUsImlhdCI6MTcyNzQ0NjQ4NSwiYXV0aF90aW1lIjoxNzI3NDQ2MTAyLCJqdGkiOiJkYzUwYzY1MS03Nzk5LTQwMWQtOGQwZi02NmU0NmQ5MzI1YzEiLCJpc3MiOiJodHRwOi8vMTkyLjE2OC4zOS4xNDM6MzA5OTkvcmVhbG1zL215cmVhbG0iLCJhdWQiOiJhY2NvdW50Iiwic3ViIjoiMTFjZWEwYmQtYWMyMC00NjE1LTkzOTctZWY4NzRjMjBiNjYwIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoibXljbGllbnQiLCJzaWQiOiIxYzdiM2ZkMC1iZTE5LTQ5OTctOGQ5ZS0wNThlYzRkZDlkMDAiLCJhY3IiOiIxIiwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbImRlZmF1bHQtcm9sZXMtbXlyZWFsbSIsIm9mZmxpbmVfYWNjZXNzIiwiYWRtaW4iLCJ1bWFfYXV0aG9yaXphdGlvbiIsInVzZXIiXX0sInJlc291cmNlX2FjY2VzcyI6eyJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX19LCJzY29wZSI6Im9wZW5pZCBlbWFpbCBwcm9maWxlIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJuYW1lIjoidG9tbWFzbyBib3JnYXRvIiwicHJlZmVycmVkX3VzZXJuYW1lIjoidGJvcmdhdG8iLCJnaXZlbl9uYW1lIjoidG9tbWFzbyIsImZhbWlseV9uYW1lIjoiYm9yZ2F0byIsImVtYWlsIjoidG9tbWFzby5ib3JnYXRvQGdtYWlsLmNvbSJ9.Hn5a4TU5zbaRU_I6858HiNavnFv4scNGY37onK_fwy0sakBbxqTW-QNuDlDjRR6BaeCqA8fcaTUmuoDhFXxJ-YSrM6LbDYnXwS1pwoKT2TbEQuhtG7UY6r94JS3_uJewCoS78pS5C14lTnpOh-fmBc2JLnY80CYRmRWWQfT_3uHNpjh4z2XO_7H6ofXHdIo8RwD-yHrBWdDeCeg5uVZF6EEfl2qyoiyixv0FUNu8f_PjRQOPrUJ8GIEKCzUSZLnUWpHz2FXzwCvchid4tOMDPwwjJ0nZKGnHlPVYKRjmuaetmlSfWLQjdptYHkjn-AsXR4Mz4nfouKmqwgjBaPPuFw" http://localhost:8180/hello/pippo
+
+podman network create wildfly-mini-serie-client-service
+
+# -p 8080:8080
+
+podman run --network=host -e KEYCLOAK_ADMIN=admin -e KEYCLOAK_ADMIN_PASSWORD=admin --name keycloak quay.io/keycloak/keycloak:latest start-dev
+
+https://github.com/wildfly-security-incubator/elytron-examples/tree/main/elytron-oidc-request
+
+kubectl create -f https://raw.githubusercontent.com/keycloak/keycloak-quickstarts/latest/kubernetes/keycloak.yaml
+
+kubectl create -f /home/tborgato/projects/guides/get-started-microservices-on-kubernetes/simple-microservice-rest-client/simple-microservice-client/kubernetes/keycloak-nodeport-service.yaml
+
+minikube service keycloak-external --url
+
+mvn clean install -P bare-metal
+
+kubectl exec --stdin --tty keycloak-6f4fc7f97d-wn2fh -- /bin/bash
+
+/opt/keycloak/bin/kc.sh export --dir=/tmp --users=realm_file --realm=myrealm
+
+= simple-microservice
+
+The `simple-microservice` project is a simple Jakarta EE application with a HTTP endpoint that is running in
+https://wildfly.org[WildFly].
+
+The `src/main` folder contains a simple 'Hello world' style Jakarta EE application using JAX-RS.
+
+== Building the application
+
+To build the application, you use Maven:
+
+[source,shell]
+----
+mvn clean package
+----
+
+Maven will compile the application, provision a WildFly server
+The WildFly server is created in `target/server` with the application deployed in it.
+
+== Running the application
+
+To run the application, run the commands:
+
+[source,shell]
+----
+cd target/server
+./bin/standalone.sh
+----
+
+Once WildFly is running, the application can be accessed at http://localhost:8080/
+
+== Testing the application
+
+To run integration tests to verify the application, you use Maven:
+
+[source,shell]
+----
+mvn clean package verify
+----
+
+Tests in `src/test` are run against the server in `target/server`.
+
+== Build Docker image
+
+[source,shell]
+----
+podman build -t my-jaxrs-app:latest .
+----
+
+== Run Docker image
+
+[source,shell]
+----
+podman run --rm -p 8080:8080 -p 9990:9990 \
+  --name=my-jaxrs-app \
+  my-jaxrs-app
+----
+
+== Deploy to Kubernetes
+
+[source,shell]
+----
+podman tag my-jaxrs-app quay.io/tborgato/my-jaxrs-app
+podman push quay.io/tborgato/my-jaxrs-app
+----
+
+NOTE: in the above commands, replace `tborgato` with your personal account
+
+[source,shell]
+----
+kubectl apply -f kubernetes/deployment-my-jaxrs-app.yaml
+kubectl expose deployment.apps/my-jaxrs-app-deployment --type=NodePort --port=8080
+----
+
+NOTE: in the above files, replace `tborgato` with your personal account
+
+== Resources
+
+* https://wildfly.org[WildFly]
+* https://docs.wildfly.org[WildFly Documentation]
