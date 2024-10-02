@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-jaxrs-app-client-secured-deployment
+  labels:
+    app: my-jaxrs-app-client-secured
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-jaxrs-app-client-secured
+  template:
+    metadata:
+      labels:
+        app: my-jaxrs-app-client-secured
+    spec:
+      containers:
+        - name: my-jaxrs-app-client-secured
+          image: quay.io/tborgato/my-jaxrs-app-client-secured
+          ports:
+            - containerPort: 8080
+            - containerPort: 9990
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: 9990
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: 9990
+          startupProbe:
+            httpGet:
+              path: /health/started
+              port: 9990
+          env:
+            - name: SIMPLE_MICROSERVICE_SERVER1_URI
+              value: "http://my-jaxrs-app-server1-secured-service:8080/hello"
+            - name: SIMPLE_MICROSERVICE_SERVER2_URI
+              value: "http://my-jaxrs-app-server2-secured-service:8080/hello"
+            - name: OIDC_PROVIDER_URL
+              # minikube service keycloak-external --url
+              value: "http://192.168.39.143:30999"
+            - name: OIDC_CLIENT_SECRET
+              value: "6aphM9GAucpQRYOU695i0mEYlhdU5vG7"

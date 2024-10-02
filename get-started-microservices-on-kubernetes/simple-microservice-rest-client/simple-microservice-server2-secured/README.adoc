@@ -1,0 +1,38 @@
+
+= simple-microservice-server2-secured
+
+== Build the application
+
+[source,bash]
+----
+mvn clean package
+----
+
+== Build the Docker Image
+
+[source,bash,subs="normal"]
+----
+podman build -t my-jaxrs-app-server2-secured:latest .
+podman tag my-jaxrs-app-server2-secured quay.io/tborgato/my-jaxrs-app-server2-secured
+podman push quay.io/tborgato/my-jaxrs-app-server2-secured
+----
+
+== Run on Kubernetes
+
+[source,bash,subs="normal"]
+----
+kubectl apply -f kubernetes/my-jaxrs-app-server2-secured-deployment.yaml
+kubectl apply -f kubernetes/my-jaxrs-app-server2-secured-service.yaml
+----
+
+== Run the Docker Image
+
+[source,bash,subs="normal"]
+----
+podman run --rm -p 8080:8080 -p 9990:9990 \
+  --network=demo-network \
+  --env "OIDC_PROVIDER_URL=http://keycloak-internal:8080" \
+  --env "OIDC_CLIENT_ID=my-jaxrs-app-server2-secured" \
+  --name=my-jaxrs-app-server2-secured \
+  my-jaxrs-app-server2-secured
+----

@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-jaxrs-app-server1-secured-deployment
+  labels:
+    app: my-jaxrs-app-server1-secured
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-jaxrs-app-server1-secured
+  template:
+    metadata:
+      labels:
+        app: my-jaxrs-app-server1-secured
+    spec:
+      containers:
+        - name: my-jaxrs-app-server1-secured
+          image: quay.io/tborgato/my-jaxrs-app-server1-secured
+          ports:
+            - containerPort: 8080
+            - containerPort: 9990
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: 9990
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: 9990
+          startupProbe:
+            httpGet:
+              path: /health/started
+              port: 9990
+          env:
+            - name: OIDC_PROVIDER_URL
+              value: "http://keycloak-internal:8080"
+            - name: OIDC_CLIENT_ID
+              value: "pBVLIeIBlB1cyhZVbfctl7DsKZpdhqRL"

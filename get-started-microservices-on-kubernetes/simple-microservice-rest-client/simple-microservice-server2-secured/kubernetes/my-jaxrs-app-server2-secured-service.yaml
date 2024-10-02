@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-jaxrs-app-server2-secured-service
+  labels:
+    app: my-jaxrs-app-server2-secured
+spec:
+  ports:
+    - name: http
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+  selector:
+    app: my-jaxrs-app-server2-secured
+  type: ClusterIP
