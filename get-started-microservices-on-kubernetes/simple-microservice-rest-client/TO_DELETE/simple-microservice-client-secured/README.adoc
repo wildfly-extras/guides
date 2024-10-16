@@ -12,18 +12,18 @@ mvn clean package
 
 [source,bash,subs="normal"]
 ----
-podman build -t simple-microservice-client-secured:latest .
-podman tag simple-microservice-client-secured quay.io/tborgato/simple-microservice-client-secured
-podman push quay.io/tborgato/simple-microservice-client-secured
+podman build -t my-jaxrs-app-client-secured:latest .
+podman tag my-jaxrs-app-client-secured quay.io/tborgato/my-jaxrs-app-client-secured
+podman push quay.io/tborgato/my-jaxrs-app-client-secured
 ----
 
 == Run on Kubernetes
 
 [source,bash,subs="normal"]
 ----
-kubectl apply -f kubernetes/simple-microservice-client-secured-deployment.yaml
-kubectl apply -f kubernetes/simple-microservice-client-secured-service.yaml
-minikube service simple-microservice-client-secured-service --url
+kubectl apply -f kubernetes/my-jaxrs-app-client-secured-deployment.yaml
+kubectl apply -f kubernetes/my-jaxrs-app-client-secured-service.yaml
+minikube service my-jaxrs-app-client-secured-service --url
 ----
 
 == Run the Docker Image
@@ -36,6 +36,6 @@ podman run --rm -p 8080:8080 -p 9990:9990 \
   --env "SIMPLE_MICROSERVICE_SERVER2_URI=http://my-jaxrs-app-server:8080/hello" \
   --env "OIDC_PROVIDER_URL=http://keycloak-internal:8080" \
   --env "OIDC_CLIENT_SECRET=pBVLIeIBlB1cyhZVbfctl7DsKZpdhqRL" \
-  --name=simple-microservice-client-secured \
-  simple-microservice-client-secured
+  --name=my-jaxrs-app-client-secured \
+  my-jaxrs-app-client-secured
 ----

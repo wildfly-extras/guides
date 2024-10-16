@@ -46,13 +46,17 @@ spec:
     spec:
       containers:
         - name: keycloak
-          image: quay.io/keycloak/keycloak:26.0
+          image: quay.io/keycloak/keycloak:25.0.6
           args: ["start-dev"]
           env:
             - name: KEYCLOAK_ADMIN
               value: "admin"
             - name: KEYCLOAK_ADMIN_PASSWORD
               value: "admin"
+            - name: KC_PROXY
+              value: "edge"
+            - name: KC_HOSTNAME_URL
+              value: "http://test.keycloak:8080"
           ports:
             - name: http
               containerPort: 8080

@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: my-jaxrs-app-client-deployment
+  name: simple-microservice-server-secured-deployment
   labels:
-    app: my-jaxrs-app-client
+    app: simple-microservice-server-secured
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: my-jaxrs-app-client
+      app: simple-microservice-server-secured
   template:
     metadata:
       labels:
-        app: my-jaxrs-app-client
+        app: simple-microservice-server-secured
     spec:
       containers:
-        - name: my-jaxrs-app-client
-          image: quay.io/tborgato/my-jaxrs-app-client
+        - name: simple-microservice-server-secured
+          image: quay.io/tborgato/simple-microservice-server-secured
           ports:
             - containerPort: 8080
             - containerPort: 9990
@@ -33,5 +33,7 @@ spec:
               path: /health/started
               port: 9990
           env:
-            - name: SIMPLE_MICROSERVICE_SERVER_URI
-              value: "http://my-jaxrs-app-server-service:8080"
+#            - name: MP_JWT_VERIFY_ISSUER
+#              value: "http://192.168.39.143:30999/realms/myrealm"
+            - name: MP_JWT_VERIFY_PUBLICKEY_LOCATION
+              value: "http://keycloak-internal:8080/realms/keycloak-realm/protocol/openid-connect/certs"

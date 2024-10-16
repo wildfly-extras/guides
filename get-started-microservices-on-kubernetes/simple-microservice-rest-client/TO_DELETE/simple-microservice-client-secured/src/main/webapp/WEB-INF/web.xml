@@ -10,8 +10,7 @@
             <url-pattern>/*</url-pattern>
         </web-resource-collection>
         <auth-constraint>
-            <role-name>user</role-name>
-            <role-name>admin</role-name>
+            <role-name>*</role-name>
         </auth-constraint>
     </security-constraint>
 
@@ -20,9 +19,6 @@
     </login-config>
 
     <security-role>
-        <role-name>user</role-name>
-    </security-role>
-    <security-role>
-        <role-name>admin</role-name>
+        <role-name>*</role-name>
     </security-role>
 </web-app>

@@ -26,7 +26,11 @@ public class GettingStartedEndpoint {
 
     @Inject
     @RestClient
-    private GettingStartedEndpointInterface service;
+    private GettingStartedEndpoint1Interface service1;
+
+    @Inject
+    @RestClient
+    private GettingStartedEndpoint2Interface service2;
 
     @GET
     @Path("/{name}")
@@ -36,11 +40,11 @@ public class GettingStartedEndpoint {
         OidcSecurityContext oidcSecurityContext = getOidcSecurityContext(httpServletRequest);
         if (oidcSecurityContext != null) {
             String authzHeaderValue = "Bearer " + oidcSecurityContext.getTokenString();
-            System.out.println("\n\n[JWT] service Token: " + authzHeaderValue + "\n\n");
-            return service.sayHello(authzHeaderValue, name);
+            System.out.println("\n\n[JWT] service2 Token: " + authzHeaderValue + "\n\n");
+            return service2.sayHello(authzHeaderValue, name);
         } else {
             System.out.println("\n\n[JWT] No token :(\n\n");
-            return service.sayHello(null, name);
+            return service2.sayHello(null, name);
         }
     }
 

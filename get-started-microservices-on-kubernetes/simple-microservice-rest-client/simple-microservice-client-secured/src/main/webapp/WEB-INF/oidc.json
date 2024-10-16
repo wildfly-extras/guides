@@ -1,8 +1,8 @@
 {
-  "client-id" : "my-jaxrs-app-client-secured",
-  "provider-url" : "${env.OIDC_PROVIDER_URL:http://192.168.39.143:30999}/realms/myrealm",
+  "client-id" : "simple-microservice-client-secured",
+  "provider-url" : "${env.OIDC_PROVIDER_URL:http://localhost:8080}/realms/keycloak-realm",
   "ssl-required" : "EXTERNAL",
   "credentials" : {
-    "secret" : "${env.OIDC_CLIENT_SECRET:6aphM9GAucpQRYOU695i0mEYlhdU5vG7}"
+    "secret" : "${env.OIDC_CLIENT_SECRET:KqIQIzNHD9LnCRjsCxblDnfEl4rcNoKB}"
   }
 }

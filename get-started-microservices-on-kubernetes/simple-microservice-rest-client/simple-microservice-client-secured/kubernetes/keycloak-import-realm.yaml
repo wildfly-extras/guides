@@ -44,10 +44,15 @@ spec:
       labels:
         app: keycloak
     spec:
+      volumes:
+        - name: keycloak-data-import-volume
+          # kubectl create configmap keycloak-data-import --from-file=keycloak-realm-realm.json=keycloak-realm-realm.json
+          configMap:
+            name: keycloak-data-import
       containers:
         - name: keycloak
           image: quay.io/keycloak/keycloak:26.0
-          args: ["start-dev"]
+          args: [ "start-dev", "--import-realm" ]
           env:
             - name: KEYCLOAK_ADMIN
               value: "admin"
@@ -60,3 +65,6 @@ spec:
             httpGet:
               path: /realms/master
               port: 8080
+          volumeMounts:
+            - name: keycloak-data-import-volume
+              mountPath: /opt/keycloak/data/import
