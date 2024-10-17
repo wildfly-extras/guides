@@ -1,0 +1,31 @@
+
+= simple-microservice-server
+
+== Build the application
+
+[source,bash]
+----
+mvn clean package
+----
+
+== Build the Docker Image
+
+[source,bash,subs="normal"]
+----
+podman build -t my-jaxrs-app-server:latest .
+----
+
+== Run the Docker Image
+
+[source,bash,subs="normal"]
+----
+podman network create demo-network
+----
+
+[source,bash,subs="normal"]
+----
+podman run --rm -p 8180:8080 -p 10090:9990 \
+  --network=demo-network \
+  --name=my-jaxrs-app-server \
+  my-jaxrs-app-server
+----

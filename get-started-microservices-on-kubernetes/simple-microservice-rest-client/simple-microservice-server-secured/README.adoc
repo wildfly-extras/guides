@@ -1,0 +1,37 @@
+= simple-microservice-server-secured
+
+== Build the application
+
+[source,bash]
+----
+mvn clean package
+----
+
+== Build the Docker Image
+
+[source,bash,subs="normal"]
+----
+podman build -t simple-microservice-server-secured:latest .
+podman tag simple-microservice-server-secured quay.io/tborgato/simple-microservice-server-secured
+podman push quay.io/tborgato/simple-microservice-server-secured
+----
+
+== Run on Kubernetes
+
+[source,bash,subs="normal"]
+----
+kubectl apply -f kubernetes/simple-microservice-server-secured-deployment.yaml
+kubectl apply -f kubernetes/simple-microservice-server-secured-service.yaml
+----
+
+== Run the Docker Image
+
+[source,bash,subs="normal"]
+----
+podman run --rm -p 8080:8080 -p 9990:9990 \
+  --network=demo-network \
+  --env "OIDC_PROVIDER_URL=http://keycloak-internal:8080" \
+  --env "OIDC_CLIENT_ID=simple-microservice-server-secured" \
+  --name=simple-microservice-server-secured \
+  simple-microservice-server-secured
+----
