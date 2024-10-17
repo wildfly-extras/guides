@@ -1,8 +1,0 @@
-{
-  "client-id" : "my-jaxrs-app-client-secured",
-  "provider-url" : "${env.OIDC_PROVIDER_URL:http://192.168.39.143:30999}/realms/myrealm",
-  "ssl-required" : "EXTERNAL",
-  "credentials" : {
-    "secret" : "${env.OIDC_CLIENT_SECRET:6aphM9GAucpQRYOU695i0mEYlhdU5vG7}"
-  }
-}

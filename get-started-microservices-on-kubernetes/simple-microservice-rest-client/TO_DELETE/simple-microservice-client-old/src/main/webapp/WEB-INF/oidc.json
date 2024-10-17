@@ -1,8 +1,0 @@
-{
-  "client-id" : "myclient-public",
-  "provider-url" : "${env.OIDC_PROVIDER_URL:http://localhost:8080}/realms/myrealm",
-  "ssl-required" : "EXTERNAL",
-  "credentials" : {
-    "secret" : "${oidc.client.secret:JxA26xeQc85N3HD3w9cEOkmAjGIwVHQ3}"
-  }
-}
