@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: my-jaxrs-app-server-deployment
+  name: simple-microservice-server-deployment
   labels:
-    app: my-jaxrs-app-server
+    app: simple-microservice-server
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: my-jaxrs-app-server
+      app: simple-microservice-server
   template:
     metadata:
       labels:
-        app: my-jaxrs-app-server
+        app: simple-microservice-server
     spec:
       containers:
-        - name: my-jaxrs-app-server
-          image: quay.io/tborgato/my-jaxrs-app-server
+        - name: simple-microservice-server
+          image: quay.io/tborgato/simple-microservice-server
           ports:
             - containerPort: 8080
             - containerPort: 9990

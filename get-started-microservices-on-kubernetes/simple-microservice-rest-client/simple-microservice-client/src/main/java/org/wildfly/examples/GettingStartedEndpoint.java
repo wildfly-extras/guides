@@ -18,12 +18,12 @@ public class GettingStartedEndpoint {
 
     @Inject
     @RestClient
-    private GettingStartedEndpointInterface service;
+    private GettingStartedEndpointClient client;
 
     @GET
     @Path("/{name}")
     @Produces(MediaType.TEXT_PLAIN)
     public Response sayHello(final @PathParam("name") String name) {
-        return service.sayHello(name);
+        return client.sayHello(name);
     }
 }

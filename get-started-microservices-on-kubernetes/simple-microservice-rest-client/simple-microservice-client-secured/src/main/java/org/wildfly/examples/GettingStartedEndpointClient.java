@@ -1,3 +1,7 @@
+/*
+ * Copyright The WildFly Authors
+ * SPDX-License-Identifier: Apache-2.0
+ */
 package org.wildfly.examples;
 
 import jakarta.ws.rs.GET;
@@ -13,7 +17,7 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 @RegisterClientHeaders
 @RegisterRestClient(configKey="simple-microservice-server")
 @Path("/hello")
-public interface GettingStartedEndpointInterface {
+public interface GettingStartedEndpointClient {
 	@GET
 	@Path("/{name}")
 	@Produces(MediaType.TEXT_PLAIN)

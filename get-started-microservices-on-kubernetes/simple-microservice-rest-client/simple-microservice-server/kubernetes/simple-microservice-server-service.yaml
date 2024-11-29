@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: my-jaxrs-app-client-service
+  name: simple-microservice-server-service
   labels:
-    app: my-jaxrs-app-client
+    app: simple-microservice-server
 spec:
   ports:
     - name: http
@@ -11,5 +11,5 @@ spec:
       port: 8080
       targetPort: 8080
   selector:
-    app: my-jaxrs-app-client
-  type: NodePort
+    app: simple-microservice-server
+  type: ClusterIP

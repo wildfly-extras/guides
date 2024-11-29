@@ -17,16 +17,18 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.wildfly.security.http.oidc.OidcSecurityContext;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 @Path("/")
 public class GettingStartedEndpoint {
+    private static final Logger LOGGER = Logger.getLogger(GettingStartedEndpoint.class.toString());
 
     @Context
     private HttpServletRequest httpServletRequest;
 
     @Inject
     @RestClient
-    private GettingStartedEndpointInterface service;
+    private GettingStartedEndpointClient client;
 
     @GET
     @Path("/{name}")
@@ -36,11 +38,11 @@ public class GettingStartedEndpoint {
         OidcSecurityContext oidcSecurityContext = getOidcSecurityContext(httpServletRequest);
         if (oidcSecurityContext != null) {
             String authzHeaderValue = "Bearer " + oidcSecurityContext.getTokenString();
-            System.out.println("\n\n[JWT] service Token: " + authzHeaderValue + "\n\n");
-            return service.sayHello(authzHeaderValue, name);
+            LOGGER.info(String.format("\n\n[JWT] service Token: %s\n\n", authzHeaderValue));
+            return client.sayHello(authzHeaderValue, name);
         } else {
-            System.out.println("\n\n[JWT] No token :(\n\n");
-            return service.sayHello(null, name);
+            LOGGER.info("\n\n[JWT] No token :(\n\n");
+            return client.sayHello(null, name);
         }
     }
 

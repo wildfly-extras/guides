@@ -37,6 +37,6 @@ spec:
               value: "http://simple-microservice-server-secured-service:8080"
             - name: OIDC_PROVIDER_URL
               # replace with the outcome of "minikube service keycloak-external --url"
-              value: "http://192.168.39.190:31950"
+              value: "http://192.168.39.178:32042"
             - name: OIDC_CLIENT_SECRET
               value: "KqIQIzNHD9LnCRjsCxblDnfEl4rcNoKB"

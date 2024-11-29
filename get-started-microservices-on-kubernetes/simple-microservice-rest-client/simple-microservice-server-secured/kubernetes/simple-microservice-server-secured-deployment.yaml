@@ -33,7 +33,5 @@ spec:
               path: /health/started
               port: 9990
           env:
-#            - name: MP_JWT_VERIFY_ISSUER
-#              value: "http://192.168.39.143:30999/realms/myrealm"
             - name: MP_JWT_VERIFY_PUBLICKEY_LOCATION
               value: "http://keycloak-internal:8080/realms/keycloak-realm/protocol/openid-connect/certs"

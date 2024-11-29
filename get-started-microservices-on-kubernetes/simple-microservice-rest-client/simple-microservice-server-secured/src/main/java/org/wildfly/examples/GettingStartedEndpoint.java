@@ -15,8 +15,11 @@ import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
+import java.util.logging.Logger;
+
 @Path("/")
 public class GettingStartedEndpoint {
+	private static final Logger LOGGER = Logger.getLogger(GettingStartedEndpoint.class.toString());
 
 	@Inject
 	@ConfigProperty(name = "mp.jwt.verify.publickey.location")
@@ -30,7 +33,7 @@ public class GettingStartedEndpoint {
 	@Produces(MediaType.TEXT_PLAIN)
 	@RolesAllowed({"admin"})
 	public Response sayHello(final @PathParam("name") String name) {
-		System.out.println("mp.jwt.verify.publickey.location=" + publicKeyLocation);
+		LOGGER.info(String.format("mp.jwt.verify.publickey.location=%s", publicKeyLocation));
 
 		String response =
 				"Hello " + name
