@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simple-microservice-client-deployment
+  labels:
+    app: simple-microservice-client
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: simple-microservice-client
+  template:
+    metadata:
+      labels:
+        app: simple-microservice-client
+    spec:
+      containers:
+        - name: simple-microservice-client
+          image: quay.io/tborgato/simple-microservice-client
+          ports:
+            - containerPort: 8080
+            - containerPort: 9990
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: 9990
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: 9990
+          startupProbe:
+            httpGet:
+              path: /health/started
+              port: 9990
+          env:
+            - name: SIMPLE_MICROSERVICE_SERVER_URI
+              value: "http://simple-microservice-server-service:8080"

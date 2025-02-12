@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: simple-microservice-client-secured-service
+  labels:
+    app: simple-microservice-client-secured
+spec:
+  ports:
+    - name: http
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+  selector:
+    app: simple-microservice-client-secured
+  type: NodePort

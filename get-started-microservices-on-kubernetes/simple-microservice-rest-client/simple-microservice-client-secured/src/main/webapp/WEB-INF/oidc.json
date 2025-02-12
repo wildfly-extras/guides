@@ -1,0 +1,8 @@
+{
+  "client-id" : "simple-microservice-client-secured",
+  "provider-url" : "${env.OIDC_PROVIDER_URL:http://localhost:8080}/realms/keycloak-realm",
+  "ssl-required" : "EXTERNAL",
+  "credentials" : {
+    "secret" : "${env.OIDC_CLIENT_SECRET:KqIQIzNHD9LnCRjsCxblDnfEl4rcNoKB}"
+  }
+}

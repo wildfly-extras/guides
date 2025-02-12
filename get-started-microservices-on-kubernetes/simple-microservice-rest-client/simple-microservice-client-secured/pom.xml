@@ -6,12 +6,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.wildfly.examples</groupId>
-    <artifactId>simple-microservice-infinispan</artifactId>
+    <artifactId>simple-microservice-client-secured</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 
     <packaging>war</packaging>
-    <name>simple-microservice-infinispan</name>
-    <description>Simple Microservice using Infinispan</description>
+    <name>simple-microservice-client-secured</name>
+    <description>Simple Microservice Client secured</description>
 
     <properties>
         <!-- Explicitly declaring the source encoding eliminates the following
@@ -25,7 +25,7 @@
         <version.wildfly.bom>35.0.0.Final</version.wildfly.bom>
 
         <!--Use JUnit 5 here - the WildFly bom still brings 4.x -->
-        <version.junit-bom>5.11.4</version.junit-bom>
+        <version.junit5>5.11.3</version.junit5>
 
         <!-- other plugin versions -->
         <version.compiler.plugin>3.13.0</version.compiler.plugin>
@@ -84,11 +84,10 @@
                 <scope>import</scope>
             </dependency>
 
-            <!--Define the JUnit5 bom. WildFly BOM still contains JUnit4, so we have to declare a version here -->
             <dependency>
-                <groupId>org.junit</groupId>
-                <artifactId>junit-bom</artifactId>
-                <version>${version.junit-bom}</version>
+                <groupId>org.wildfly.bom</groupId>
+                <artifactId>wildfly-expansion</artifactId>
+                <version>${version.wildfly.bom}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -111,31 +110,22 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- Test scope dependencies -->
         <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <scope>test</scope>
+            <groupId>org.eclipse.microprofile.rest.client</groupId>
+            <artifactId>microprofile-rest-client-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.microprofile.config</groupId>
+            <artifactId>microprofile-config-api</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
-            <groupId>org.jboss.arquillian.junit5</groupId>
-            <artifactId>arquillian-junit5-container</artifactId>
-            <scope>test</scope>
+            <groupId>org.wildfly.security</groupId>
+            <artifactId>wildfly-elytron-http-oidc</artifactId>
+            <scope>provided</scope>
         </dependency>
-
-        <dependency>
-            <groupId>org.wildfly.arquillian</groupId>
-            <artifactId>wildfly-arquillian-container-managed</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-client</artifactId>
-            <scope>test</scope>
-        </dependency>
-
         <dependency>
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
@@ -184,15 +174,10 @@
                     <layers>
                         <!-- layers may be used to customize the server to provision-->
                         <layer>cloud-server</layer>
-                        <layer>web-clustering</layer>
+                        <layer>microprofile-config</layer>
+                        <layer>microprofile-rest-client</layer>
+                        <layer>elytron-oidc-client</layer>
                     </layers>
-                    <packaging-scripts>
-                        <packaging-script>
-                            <scripts>
-                                <script>infinispan.cli</script>
-                            </scripts>
-                        </packaging-script>
-                    </packaging-scripts>
                 </configuration>
                 <executions>
                     <execution>
@@ -202,25 +187,30 @@
                     </execution>
                 </executions>
             </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-failsafe-plugin</artifactId>
-                <version>${version.failsafe.plugin}</version>
-                <configuration>
-                    <includes>
-                        <include>**/*IT</include>
-                    </includes>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>integration-test</goal>
-                            <goal>verify</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>bare-metal</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.wildfly.plugins</groupId>
+                        <artifactId>wildfly-maven-plugin</artifactId>
+                        <version>${version.wildfly.maven.plugin}</version>
+                        <configuration>
+                            <packaging-scripts>
+                                <packaging-script>
+                                    <commands>
+                                        <command>/socket-binding-group=standard-sockets:write-attribute(name=port-offset,value=100)</command>
+                                    </commands>
+                                </packaging-script>
+                            </packaging-scripts>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

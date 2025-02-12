@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simple-microservice-client-secured-deployment
+  labels:
+    app: simple-microservice-client-secured
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: simple-microservice-client-secured
+  template:
+    metadata:
+      labels:
+        app: simple-microservice-client-secured
+    spec:
+      containers:
+        - name: simple-microservice-client-secured
+          image: quay.io/tborgato/simple-microservice-client-secured
+          ports:
+            - containerPort: 8080
+            - containerPort: 9990
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: 9990
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: 9990
+          startupProbe:
+            httpGet:
+              path: /health/started
+              port: 9990
+          env:
+            - name: SIMPLE-MICROSERVICE-SERVER_MP_REST_URI
+              value: "http://simple-microservice-server-secured-service:8080"
+            - name: OIDC_PROVIDER_URL
+              # replace with the outcome of "minikube service keycloak-external --url"
+              value: "http://192.168.39.178:32042"
+            - name: OIDC_CLIENT_SECRET
+              value: "KqIQIzNHD9LnCRjsCxblDnfEl4rcNoKB"

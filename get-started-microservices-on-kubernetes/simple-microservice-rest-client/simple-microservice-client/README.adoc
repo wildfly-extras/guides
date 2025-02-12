@@ -1,0 +1,27 @@
+
+= simple-microservice-client
+
+== Build the application
+
+[source,bash]
+----
+mvn clean package
+----
+
+== Build the Docker Image
+
+[source,bash,subs="normal"]
+----
+podman build -t my-jaxrs-app-client:latest .
+----
+
+== Run the Docker Image
+
+[source,bash,subs="normal"]
+----
+podman run --rm -p 8080:8080 -p 9990:9990 \
+  --network=demo-network \
+  --env "SIMPLE_MICROSERVICE_SERVER_URI=http://my-jaxrs-app-server:8080/hello" \
+  --name=my-jaxrs-app-client \
+  my-jaxrs-app-client
+----

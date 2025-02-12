@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simple-microservice-server-secured-deployment
+  labels:
+    app: simple-microservice-server-secured
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: simple-microservice-server-secured
+  template:
+    metadata:
+      labels:
+        app: simple-microservice-server-secured
+    spec:
+      containers:
+        - name: simple-microservice-server-secured
+          image: quay.io/tborgato/simple-microservice-server-secured
+          ports:
+            - containerPort: 8080
+            - containerPort: 9990
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: 9990
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: 9990
+          startupProbe:
+            httpGet:
+              path: /health/started
+              port: 9990
+          env:
+            - name: MP_JWT_VERIFY_PUBLICKEY_LOCATION
+              value: "http://keycloak-internal:8080/realms/keycloak-realm/protocol/openid-connect/certs"
