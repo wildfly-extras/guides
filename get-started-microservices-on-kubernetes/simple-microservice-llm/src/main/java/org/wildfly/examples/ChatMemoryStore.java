@@ -1,3 +1,7 @@
+/*
+ * Copyright The WildFly Authors
+ * SPDX-License-Identifier: Apache-2.0
+ */
 package org.wildfly.examples;
 
 import dev.langchain4j.memory.ChatMemory;
@@ -8,9 +12,9 @@ import java.io.Serializable;
 
 @SessionScoped
 public class ChatMemoryStore implements Serializable {
-	ChatMemory memory = MessageWindowChatMemory.withMaxMessages(5);
+    ChatMemory memory = MessageWindowChatMemory.withMaxMessages(5);
 
-	public ChatMemory getMemory() {
+    public ChatMemory getMemory() {
 		return memory;
 	}
 }
