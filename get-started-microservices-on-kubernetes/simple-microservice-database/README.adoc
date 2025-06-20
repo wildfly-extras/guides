@@ -32,6 +32,27 @@ podman run --rm --network=demo-network --name my-postgres \
     docker.io/library/postgres
 ----
 
+== Build and run the application
+
+Build:
+[source,shell]
+----
+mvn clean package
+----
+
+Run the un-containerized app:
+[source,shell]
+----
+export POSTGRESQL_USER=postgres
+export POSTGRESQL_PASSWORD=admin
+export POSTGRESQL_HOST=my-postgres
+export POSTGRESQL_PORT=5432
+export POSTGRESQL_DATABASE=postgres
+export POSTGRESQL_JNDI=java:jboss/datasources/PostgreSQLDS
+./target/server/bin/standalone.sh
+----
+
+
 == Build Docker image
 
 [source,shell]

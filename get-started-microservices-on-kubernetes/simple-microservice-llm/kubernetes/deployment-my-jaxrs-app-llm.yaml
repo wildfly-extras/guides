@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-jaxrs-app-llm-deployment
+  labels:
+    app: my-jaxrs-app-llm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-jaxrs-app-llm
+  template:
+    metadata:
+      labels:
+        app: my-jaxrs-app-llm
+    spec:
+      containers:
+        - name: my-jaxrs-app-llm
+          image: quay.io/tborgato/my-jaxrs-app-llm
+          ports:
+            - containerPort: 8080
+            - containerPort: 9990
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: 9990
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: 9990
+          startupProbe:
+            httpGet:
+              path: /health/started
+              port: 9990
+          env:
+            - name: OLLAMA_CHAT_URL
+              value: 'http://ollama-service:11434'
+            - name: OLLAMA_CHAT_MODEL_NAME
+              value: 'smollm2'
