@@ -1,0 +1,8 @@
+Miles of Smiles - Available Car Brands
+
+Miles of Smiles offers a selection of 9 car brands ranging from mainstream to luxury, including fully electric options.
+
+Luxury: Aston Martin, Porsche
+Premium: BMW, DS, Mercedes
+Mainstream: Renault, Peugeot, Toyota
+Electric: Tesla
