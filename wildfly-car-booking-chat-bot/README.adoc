@@ -1,0 +1,73 @@
+
+= wildfly-car-booking-chat-bot
+
+The `wildfly-car-booking-chat-bot` project is a simple Jakarta EE application with a HTTP endpoint that is running in
+https://wildfly.org[WildFly].
+
+The `src/main` folder contains a simple 'Hello world' style Jakarta EE application using JAX-RS.
+
+== Building the application
+
+To run the application, you use Maven:
+
+[source,shell]
+----
+mvn clean package
+----
+
+Maven will compile the application and provision a WildFly server.
+The WildFly server is created in `target/server` with the application deployed in it.
+
+Provisioning is done by using WildFly Glow discovery: Glow parses the deployment and adds all necessary WildFly features.
+Discovery is configured in "pom.xml" for the "wildfly-maven-plugin":
+
+----
+<configuration>
+	<discover-provisioning-info>
+		<version>${version.wildfly.bom}</version>
+	</discover-provisioning-info>
+</configuration>
+----
+
+You could also configure the WildFly provisioning yourself:
+
+----
+<configuration>
+	<feature-packs>
+		<feature-pack>
+			<location>org.wildfly:wildfly-galleon-pack:${version.wildfly.bom}</location>
+		</feature-pack>
+	</feature-packs>
+	<layers>
+		<layer>cloud-server</layer>
+	</layers>
+</configuration>
+----
+
+== Running the application
+
+To run the application, run the commands:
+
+[source,shell]
+----
+cd target/server
+./bin/standalone.sh
+----
+
+Once WildFly is running, the application can be accessed at http://localhost:8080/
+
+== Testing the application
+
+To run integration tests to verify the application, you use Maven:
+
+[source,shell]
+----
+mvn clean package verify
+----
+
+Tests in `src/test` are run against the server in `target/server`.
+
+== Resources
+
+* https://wildfly.org[WildFly]
+* https://docs.wildfly.org[WildFly Documentation]
